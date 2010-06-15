@@ -1,0 +1,51 @@
+---
+abstract: 'AnyEvent::Handle subclass with user-defined up/down bandwidth cap'
+author:
+  - 'Sanko Robinson <sanko@cpan.org>'
+build_requires:
+  AnyEvent: 0
+  Archive::Extract: 0
+  File::Find: 0
+  Module::Build: 0.36
+  Test::More: 0.88
+  parent: 0
+  perl: 5.008
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Conversion, software version 7.0'
+keywords:
+  - AnyEvent
+  - Handle
+  - Throttle
+  - bandwidth
+  - limit
+  - cap
+  - throughput
+license: artistic_2
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: AnyEvent-Handle-Throttle
+no_index:
+  directory:
+    - t
+    - example
+    - inc
+provides:
+  AnyEvent::Handle::Throttle:
+    file: lib/AnyEvent/Handle/Throttle.pm
+    version: 0.000001
+requires:
+  AnyEvent: 0
+  Archive::Extract: 0
+  File::Find: 0
+  Module::Build: 0.36
+  Test::More: 0.88
+  parent: 0
+  perl: 5.008
+resources:
+  ChangeLog: http://github.com/sanko/anyevent-handle-throttle/commits/master
+  bugtracker: http://github.com/sanko/anyevent-handle-throttle/issues
+  license: http://www.perlfoundation.org/artistic_license_2_0
+  repository: http://github.com/sanko/anyevent-handle-throttle
+version: 0.000001
