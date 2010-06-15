@@ -13,7 +13,6 @@ $handle = new_ok(
     'AnyEvent::Handle::Throttle',
     [upload_rate   => 2,
      download_rate => 1024,
-     _period       => 1.5,
      connect       => ['cpan.org', 'http'],
      on_prepare    => sub {15},
      on_connect    => sub { $prev = AE::now; },
@@ -43,7 +42,7 @@ $handle = new_ok(
          ok length $handle->rbuf <= $handle->download_rate,
              sprintf 'Chunk %d was %d bytes long...', ++$chunks,
              length $handle->rbuf;
-         ok $now >= $prev + $handle->{_period},
+         ok $now <= $prev + ($handle->{_period} * 2),
              sprintf ' ...and came %f seconds later', $now - $prev
              if $chunks > 1;
          $handle->rbuf() = '';
@@ -81,6 +80,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: http.t a579491 2010-06-15 00:21:13Z sanko@cpan.org $
+=for rcs $Id: http.t 4656007 2010-06-15 04:33:43Z sanko@cpan.org $
 
 =cut

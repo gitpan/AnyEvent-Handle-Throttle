@@ -1,3 +1,11 @@
+Version 0.000002 | 2010-06-15 04:33:43Z (Tue, 15 Jun 2010) | 4656007
+
+    Documentation/Sample Code/Test Suite:
+     * Spellcheck, ftw
+     * Correcting issue tracker URL in POD and README
+     * Slightly tighter tests
+     * Correcting requirement lists in Build.PL
+
 Version 0.000001 | 2010-06-15 00:31:17Z (Tue, 15 Jun 2010) | 8b45623
 
     API Changes/Compatibility Information:
@@ -20,6 +28,6 @@ _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/anyevent-handle-throttle/commits/master
 
-$Ver: 0.000001 $ from git $Rev: 8b45623 $
-$Date: 2010-06-15 00:31:17Z (Tue, 15 Jun 2010) $
+$Ver: 0.000002 $ from git $Rev: 4656007 $
+$Date: 2010-06-15 04:33:43Z (Tue, 15 Jun 2010) $
 $Url: http://github.com/sanko/anyevent-handle-throttle/raw/master/Changes $
