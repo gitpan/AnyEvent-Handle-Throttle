@@ -9,6 +9,8 @@ $|++;
 my $condvar = AnyEvent->condvar;
 my ($prev, $chunks, $handle, $rbuf) = (AE::now, 0, undef, undef);
 my $req = "GET / HTTP/1.0\015\012\015\012";
+AnyEvent::Handle::Throttle->global_upload_limit(5);
+AnyEvent::Handle::Throttle->global_download_limit(200);
 TODO: {
     local $TODO = 'May fail blah blah blah';
     $handle = new_ok(
@@ -27,22 +29,29 @@ TODO: {
              $condvar->send;
          },
          on_drain => sub {
-             my $now      = AE::now;
-             my $expected = int(length($req));
+             my $now = AE::now;
+             my $expected = (
+                     int(length($req)
+                             / AnyEvent::Handle::Throttle->global_upload_limit
+                     )
+             );
              diag sprintf 'Write queue is empty after %f seconds',
                  $now - $prev;
              $prev = $now;
          },
          on_read => sub {
              my $now = AE::now;
-             ok !$chunks++,
-                 sprintf 'Chunk %d was %d bytes long...', $chunks,
+             ok length $handle->rbuf
+                 <= AnyEvent::Handle::Throttle->global_download_limit,
+                 sprintf 'Chunk %d was %d bytes long...', ++$chunks,
                  length $handle->rbuf;
+             diag sprintf ' ...and came %f seconds later', $now - $prev
+                 if $chunks > 1;
              $handle->rbuf() = '';
              $prev = $now;
              }
         ],
-        '::Throttle->new( ... )'
+        '::Throttle->new( ... ); G_up: 5, G_down: 20'
     );
     $handle->push_write($req);
     $condvar->recv;
@@ -74,6 +83,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: http_default.t 040edd0 2010-06-22 17:15:38Z sanko@cpan.org $
+=for rcs $Id: http_global.t 73df728 2010-06-22 17:19:03Z sanko@cpan.org $
 
 =cut

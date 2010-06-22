@@ -33,7 +33,7 @@ no_index:
 provides:
   AnyEvent::Handle::Throttle:
     file: lib/AnyEvent/Handle/Throttle.pm
-    version: 0.000002001
+    version: 0.000002_002
 requires:
   AnyEvent: 0
   File::Find: 0
@@ -46,4 +46,4 @@ resources:
   bugtracker: http://github.com/sanko/anyevent-handle-throttle/issues
   license: http://www.perlfoundation.org/artistic_license_2_0
   repository: http://github.com/sanko/anyevent-handle-throttle
-version: 0.000002001
+version: 0.000002_002

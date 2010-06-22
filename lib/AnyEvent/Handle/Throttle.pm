@@ -6,31 +6,55 @@ package AnyEvent::Handle::Throttle;
     use Errno qw[EAGAIN EINTR];
     use AnyEvent::Util qw[WSAEWOULDBLOCK];
     use parent 'AnyEvent::Handle';
-    our $MAJOR = 0.00; our $MINOR = 2; our $DEV = -1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $MAJOR = 0.00; our $MINOR = 2; our $DEV = 2; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
 
-    sub upload_rate {
-        $_[1] ? $_[0]->{upload_rate} = $_[1] : $_[0]->{upload_rate};
+    sub upload_limit {
+        $_[1] ? $_[0]->{upload_limit} = $_[1] : $_[0]->{upload_limit};
     }
 
-    sub download_rate {
-        $_[1] ? $_[0]->{download_rate} = $_[1] : $_[0]->{download_rate};
+    sub download_limit {
+        $_[1] ? $_[0]->{download_limit} = $_[1] : $_[0]->{download_limit};
     }
-    sub upload_period   { $_[0]->{upload_period} }
-    sub download_period { $_[0]->{download_period} }
+    sub upload_speed   { $_[0]->{upload_speed} }
+    sub download_speed { $_[0]->{download_speed} }
+    my ($global_upload_limit, $global_download_limit,
+        $global_upload_speed, $global_download_speed);
+    my $global_period = 1;
+
+    sub global_upload_limit {
+        $_[1] ? $global_upload_limit = $_[1] : $global_upload_limit;
+    }
+
+    sub global_download_limit {
+        $_[1] ? $global_download_limit = $_[1] : $global_download_limit;
+    }
+    sub global_upload_speed   {$global_upload_speed}
+    sub global_download_speed {$global_download_speed}
+    my ($global_read_size,     $global_write_size,
+        $global__upload_speed, $global__download_speed);
+    my $global_reset_cb = sub {
+        $global_read_size      = $global_download_limit;
+        $global_write_size     = $global_upload_limit || 8 * 1024;
+        $global_upload_speed   = $global__upload_speed;
+        $global_download_speed = $global__download_speed;
+        $global__upload_speed  = $global__download_speed = 0;
+    };
+    $global_reset_cb->();
+    our $global_reset = AE::timer(0, $global_period, $global_reset_cb);
 
     sub _start {
-        my $self = shift;
-        $self->SUPER::_start(@_);
+        my $self  = shift;
         my $reset = sub {
-            $self->{read_size}       = $self->{download_rate};
-            $self->{write_size}      = $self->{upload_rate} || 8 * 1024;
-            $self->{upload_period}   = $self->{_upload_period};
-            $self->{download_period} = $self->{_download_period};
-            $self->{_upload_period}  = $self->{_download_period} = 0;
+            $self->{read_size}      = $self->{download_limit};
+            $self->{write_size}     = $self->{upload_limit} || 8 * 1024;
+            $self->{upload_speed}   = $self->{_upload_speed};
+            $self->{download_speed} = $self->{_download_speed};
+            $self->{_upload_speed}  = $self->{_download_speed} = 0;
         };
         $self->{_period} ||= 1;
         $self->{_reset} = AE::timer(0, $self->{_period}, $reset);
         $reset->();
+        $self->SUPER::_start(@_);
     }
 
     sub start_read {
@@ -38,15 +62,14 @@ package AnyEvent::Handle::Throttle;
         unless ($self->{_rw} || $self->{_eof} || !$self->{fh}) {
             Scalar::Util::weaken $self;
             $self->{_rw} = AE::io $self->{fh}, 0, sub {
-                my $_read
-                    = defined $self->{download_rate}
-                    && defined $self->{read_size} ? $self->{read_size}
-                    : defined $self->{rbuf_max}   ? $self->{rbuf_max}
-                    :                               ();
-                if (defined $_read && $_read == 0) {
+                my ($read) = sort grep {defined} $global_read_size,
+                    $self->{read_size};
+                my ($period) = sort grep {defined} $global_period,
+                    $self->{_period};
+                if (defined $read && $read <= 0) {
                     $self->stop_read;
                     return $self->{_pause_read} = AE::timer(
-                        0.5, 0,
+                        $period, 0,
                         sub {
                             delete $self->{_pause_read};
                             $self->start_read;
@@ -55,11 +78,13 @@ package AnyEvent::Handle::Throttle;
                 }
                 my $rbuf = \($self->{tls} ? my $buf : $self->{rbuf});
                 $$rbuf ||= '';
-                my $len = sysread $self->{fh}, $$rbuf, $_read || 8192,
+                my $len = sysread $self->{fh}, $$rbuf, $read || 8192,
                     length $$rbuf;
                 if ($len > 0) {
                     $self->{read_size} -= $len;
-                    $self->{_download_period} += $len;
+                    $global_read_size  -= $len;
+                    $self->{_download_speed} += $len;
+                    $global__download_speed  += $len;
                     $self->{_activity} = $self->{_ractivity} = AE::now;
                     if ($self->{tls}) {
                         Net::SSLeay::BIO_write($self->{_rbio}, $$rbuf);
@@ -91,7 +116,11 @@ package AnyEvent::Handle::Throttle;
                     if length $self->{wbuf};
             };
             $cb = sub {
-                if (!$self->{write_size}) {
+                my ($write) = sort grep {defined} $global_write_size,
+                    $self->{write_size};
+                my ($period) = sort grep {defined} $global_period,
+                    $self->{_period};
+                if (defined $write && $write <= 0) {
                     if (length $self->{wbuf}) {
                         delete $self->{_ww};
                         return $self->{_pause_ww} = AE::timer(
@@ -104,11 +133,12 @@ package AnyEvent::Handle::Throttle;
                     }
                     return 1;
                 }
-                my $len = syswrite $self->{fh}, $self->{wbuf},
-                    $self->{write_size};
+                my $len = syswrite $self->{fh}, $self->{wbuf}, $write;
                 if (defined $len) {
                     $self->{write_size} -= $len;
-                    $self->{_upload_period} += $len;
+                    $global_write_size  -= $len;
+                    $self->{_upload_speed} += $len;
+                    $global__upload_speed  += $len;
                     substr $self->{wbuf}, 0, $len, "";
                     $self->{_activity} = $self->{_wactivity} = AE::now;
                     $self->{on_drain}($self)
@@ -144,8 +174,8 @@ AnyEvent::Handle::Throttle - AnyEvent::Handle subclass with user-defined up/down
     my $condvar = AnyEvent->condvar;
     my $handle;
     $handle = AnyEvent::Handle::Throttle->new(
-        upload_rate   => 2,  # Very...
-        download_rate => 50, # ...slow
+        upload_limit   => 2,  # Very...
+        download_limit => 50, # ...slow
         connect  => ['google.com', 'http'],
         on_error => sub {
             warn "error $_[2]\n";
@@ -189,35 +219,63 @@ constructor supports these arguments (all as C<< key => value >> pairs).
 
 =over
 
-=item upload_rate => <bytes>
+=item upload_limit => <bytes>
 
-This is the maximum amount of data (in bytes) writen to the filehandle per
-period. If C<upload_rate> is not specified, the upload rate is not limited.
+This is the maximum amount of data (in bytes) written to the filehandle per
+period. If C<upload_limit> is not specified, the upload rate is not limited.
 
 Note that this value can/will override C<read_size>.
 
-=item download_rate => <bytes>
+=item download_limit => <bytes>
 
 This is the maximum amount of data (in bytes) read from the filehandle per
-period. If C<download_rate> is not specified, the upload rate is not limited.
+period. If C<download_limit> is not specified, the upload rate is not limited.
 
 =back
 
-=item $handle->B<upload_rate>( $bytes )
+=item $handle->B<upload_limit>( $bytes )
 
 Sets/returns the current upload rate in bytes per period.
 
-=item $handle->B<download_rate>( $bytes )
+=item $handle->B<download_limit>( $bytes )
 
 Sets/returns the current download rate in bytes per period.
 
-=item $bytes = $handle->B<upload_period>( )
+=item $bytes = $handle->B<upload_speed>( )
 
 Returns the amount of data written during the previous period.
 
-=item $bytes = $handle->B<download_period>( )
+=item $bytes = $handle->B<download_speed>( )
 
 Returns the amount of data read during the previous period.
+
+=back
+
+If you're using L<AnyEvent::Handle::Throttle|AnyEvent::Handle::Throttle> to
+limit bandwidth and realize you'd rather set flat limits on the B<total>
+bandwidth instead of per-handle, try these methods:
+
+=over
+
+=item AnyEvent::Handle::Throttle->B<global_upload_limit>( $bytes )
+
+Sets/returns the current global upload rate in bytes per period.
+
+=item AnyEvent::Handle::Throttle->B<global_download_limit>( $bytes )
+
+Sets/returns the current global download rate in bytes per period.
+
+=item $bytes = $handle->B<global_upload_speed>( )
+
+Returns the amount of data written through all
+L<AnyEvent::Handle::Throttle|AnyEvent::Handle::Throttle> objects during the
+previous period.
+
+=item $bytes = $handle->B<global_download_speed>( )
+
+Returns the amount of data read through all
+L<AnyEvent::Handle::Throttle|AnyEvent::Handle::Throttle> objects during the
+previous period.
 
 =back
 
@@ -231,7 +289,7 @@ The current default period is C<1> second.
 
 =item *
 
-On destuction, all remaining data is sent ASAP, ignoring the user defined
+On destruction, all remaining data is sent ASAP, ignoring the user defined
 upload limit. This may change in the future.
 
 =back
@@ -265,6 +323,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: Throttle.pm 6ee738a 2010-06-17 01:39:49Z sanko@cpan.org $
+=for rcs $Id: Throttle.pm 4c91a2a 2010-06-22 17:45:42Z sanko@cpan.org $
 
 =cut
