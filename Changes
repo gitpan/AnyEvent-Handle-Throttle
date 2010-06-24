@@ -1,4 +1,4 @@
-Version 0.XXXXX | In the not too distant future | 4c91a2a
+Version 0.000002002 | 2010-06-24 03:04:03Z (Thu, 24 Jun 2010) | edb30dd
 
     API Changes/Compatibility Information:
      * The entire API has changed.
@@ -6,13 +6,14 @@ Version 0.XXXXX | In the not too distant future | 4c91a2a
            remained the same.
      * New global limits.
 
-    Documentation/Sample Code/Test Suite:
+    Documentation/Sample Code/Test Suite/Metadata:
      * New tests:
        - t/http_global.t tests global bandwidth limits
        - t/loopback.t fallback test when the http tests fail (system config?)
+     * (Hopefully) Updated bugtracker and repository metadata
 
     Notes:
-     * Beijing!
+     * Beijing! Family! Pictures! Food! Sleep!
 
 Version 0.000002001 | 2010-06-17 01:39:49Z (Thu, 17 Jun 2010) | 6ee738a
 
@@ -50,6 +51,6 @@ _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/anyevent-handle-throttle/commits/master
 
-$Ver: 0.000002_002 $ from git $Rev: 4c91a2a $
-$Date: 2010-06-22 17:45:42Z (Tue, 22 Jun 2010) $
+$Ver: 0.000002002 $ from git $Rev: edb30dd $
+$Date: 2010-06-24 03:04:03Z (Thu, 24 Jun 2010) $
 $Url: http://github.com/sanko/anyevent-handle-throttle/raw/master/Changes $

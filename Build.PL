@@ -44,12 +44,19 @@ my $mb = $class->new(
         keywords =>
             [qw[AnyEvent Handle Throttle bandwidth limit cap throughput]],
         resources => {
-            bugtracker =>
-                'http://github.com/sanko/anyevent-handle-throttle/issues',
+            bugtracker => {
+                web =>
+                    'http://github.com/sanko/anyevent-handle-throttle/issues',
+                mailto => 'sanko@cpan.org'
+            },
+            repository => {
+                 url => 'git://github.com/sanko/anyevent-handle-throttle.git',
+                 web => 'http://github.com/sanko/anyevent-handle-throttle',
+                 type => 'git'
+            },
             ChangeLog =>
                 'http://github.com/sanko/anyevent-handle-throttle/commits/master',
-            license => 'http://www.perlfoundation.org/artistic_license_2_0',
-            repository => 'http://github.com/sanko/anyevent-handle-throttle'
+            license => ['http://www.perlfoundation.org/artistic_license_2_0']
         }
     }
 );
@@ -103,6 +110,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: Build.PL ce57b5b 2010-06-15 04:32:20Z sanko@cpan.org $
+=for rcs $Id: Build.PL 9f41663 2010-06-24 02:56:27Z sanko@cpan.org $
 
 =cut
