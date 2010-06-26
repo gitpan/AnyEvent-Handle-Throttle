@@ -40,7 +40,6 @@ my $mb = $class->new(
     no_index   => {directory => [qw[t example inc]]},
     test_files => \@tests,
     meta_merge => {
-        generated_by => 'Conversion, software version 7.0',
         keywords =>
             [qw[AnyEvent Handle Throttle bandwidth limit cap throughput]],
         resources => {
@@ -110,6 +109,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: Build.PL 9f41663 2010-06-24 02:56:27Z sanko@cpan.org $
+=for rcs $Id: Build.PL 8f0cb2d 2010-06-26 02:54:46Z sanko@cpan.org $
 
 =cut

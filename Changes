@@ -1,3 +1,8 @@
+Version 0.XXXXX | In the not too distant future | 8f0cb2d
+
+    Documentation/Sample Code/Test Suite/Metadata:
+     * Moving to META.json
+
 Version 0.000002002 | 2010-06-24 03:04:03Z (Thu, 24 Jun 2010) | edb30dd
 
     API Changes/Compatibility Information:
@@ -51,6 +56,6 @@ _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/anyevent-handle-throttle/commits/master
 
-$Ver: 0.000002002 $ from git $Rev: edb30dd $
-$Date: 2010-06-24 03:04:03Z (Thu, 24 Jun 2010) $
+$Ver: 0.000002_003 $ from git $Rev: 8f0cb2d $
+$Date: 2010-06-26 02:54:46Z (Sat, 26 Jun 2010) $
 $Url: http://github.com/sanko/anyevent-handle-throttle/raw/master/Changes $
