@@ -1,7 +1,8 @@
-Version 0.XXXXX | In the not too distant future | 8f0cb2d
+Version 0.XXXXX | In the not too distant future | b99634c
 
     Documentation/Sample Code/Test Suite/Metadata:
      * Moving to META.json
+     * http tests are run concurrently and without the protection of TODO
 
 Version 0.000002002 | 2010-06-24 03:04:03Z (Thu, 24 Jun 2010) | edb30dd
 
@@ -56,6 +57,6 @@ _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/anyevent-handle-throttle/commits/master
 
-$Ver: 0.000002_003 $ from git $Rev: 8f0cb2d $
-$Date: 2010-06-26 02:54:46Z (Sat, 26 Jun 2010) $
+$Ver: 0.000002_004 $ from git $Rev: b99634c $
+$Date: 2010-06-29 06:14:45Z (Tue, 29 Jun 2010) $
 $Url: http://github.com/sanko/anyevent-handle-throttle/raw/master/Changes $

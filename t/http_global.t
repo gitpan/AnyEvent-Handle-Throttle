@@ -12,7 +12,8 @@ my $req = "GET / HTTP/1.0\015\012\015\012";
 AnyEvent::Handle::Throttle->global_upload_limit(5);
 AnyEvent::Handle::Throttle->global_download_limit(200);
 TODO: {
-    local $TODO = 'May fail blah blah blah';
+
+    #local $TODO = 'May fail blah blah blah';
     $handle = new_ok(
         'AnyEvent::Handle::Throttle',
         [connect    => ['cpan.org', 80],
@@ -83,6 +84,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: http_global.t 73df728 2010-06-22 17:19:03Z sanko@cpan.org $
+=for rcs $Id: http_global.t b99634c 2010-06-29 06:14:45Z sanko@cpan.org $
 
 =cut

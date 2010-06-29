@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use Config qw[%Config];
 use File::Find qw[find];
 $|++;
 my $automated_testing = $ENV{AUTOMATED_TESTING} || $ENV{PERL_MM_USE_DEFAULT};
@@ -24,6 +23,7 @@ my $mb = $class->new(
                  'Module::Build' => 0.36,
                  parent          => 0,
                  perl            => 5.008000,
+                 'Test::Class'   => 0.35,
                  'Test::More'    => 0.88
     },
     build_requires => {'AnyEvent'      => 0,
@@ -31,14 +31,17 @@ my $mb = $class->new(
                        'Module::Build' => 0.36,
                        parent          => 0,
                        perl            => 5.008000,
+                       'Test::Class'   => 0.35,
                        'Test::More'    => 0.88
     },
-    add_to_cleanup => [
-               qw[AnyEvent-Handle-Throttle-*],
-               map {"*$_"} ('.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'})
-    ],
-    no_index   => {directory => [qw[t example inc]]},
-    test_files => \@tests,
+    add_to_cleanup   => [qw[AnyEvent-Handle-Throttle-*]],
+    no_index         => {directory => [qw[t example inc]]},
+    test_files       => \@tests,
+    test_file_exts   => [qw[.t]],
+    use_tap_harness  => 1,
+    tap_harness_args => {jobs  => 9,
+                         rules => {par => [{seq => '/t/http*'}, '*']}
+    },
     meta_merge => {
         keywords =>
             [qw[AnyEvent Handle Throttle bandwidth limit cap throughput]],
@@ -70,12 +73,6 @@ $mb->notes(svn => $mb->dist_version =~ m[\.0?(\d{4})]);
 $mb->create_build_script;
 ##############################################################################
 exit 0;
-
-sub okay_tcp4 {
-    return 0 if not -f 't/90000_data/94000_scripts/94004_TCP4_loopback.pl';
-    system(qq["$^X" t/90000_data/94000_scripts/94004_TCP4_loopback.pl]);
-    return $? ? 0 : 1;
-}
 
 sub find_cb {
     return if -d $_ or -l $_;
@@ -109,6 +106,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: Build.PL 8f0cb2d 2010-06-26 02:54:46Z sanko@cpan.org $
+=for rcs $Id: Build.PL 1c6ff14 2010-06-29 06:14:02Z sanko@cpan.org $
 
 =cut

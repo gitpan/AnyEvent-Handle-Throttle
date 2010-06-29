@@ -6,7 +6,7 @@ package AnyEvent::Handle::Throttle;
     use Errno qw[EAGAIN EINTR];
     use AnyEvent::Util qw[WSAEWOULDBLOCK];
     use parent 'AnyEvent::Handle';
-    our $MAJOR = 0.00; our $MINOR = 2; our $DEV = 3; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $MAJOR = 0.00; our $MINOR = 2; our $DEV = 4; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
 
     sub upload_limit {
         $_[1] ? $_[0]->{upload_limit} = $_[1] : $_[0]->{upload_limit};
@@ -323,6 +323,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: Throttle.pm 8f0cb2d 2010-06-26 02:54:46Z sanko@cpan.org $
+=for rcs $Id: Throttle.pm b99634c 2010-06-29 06:14:45Z sanko@cpan.org $
 
 =cut
