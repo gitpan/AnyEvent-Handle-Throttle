@@ -35,7 +35,7 @@
          "version" : "0.000002_004"
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "mailto" : "sanko@cpan.org",
@@ -51,5 +51,5 @@
       },
       "x_ChangeLog" : "http://github.com/sanko/anyevent-handle-throttle/commits/master"
    },
-   "version" : "0.000002_004"
+   "version" : "0.000002003"
 }

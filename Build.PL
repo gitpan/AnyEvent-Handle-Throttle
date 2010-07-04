@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use File::Find qw[find];
 $|++;
+our $MAJOR = 0.00; our $MINOR = 2; our $DEV = -3; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
 my $automated_testing = $ENV{AUTOMATED_TESTING} || $ENV{PERL_MM_USE_DEFAULT};
 my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{RELEASE_TESTING} ? 1 : 0);
 my @tests;
@@ -17,6 +18,7 @@ my $mb = $class->new(
     module_name => 'AnyEvent::Handle::Throttle',
     license     => 'artistic_2',
     dist_author => 'Sanko Robinson <sanko@cpan.org>',
+    dist_version => $VERSION,
     requires    => {
                  'AnyEvent'      => 0,
                  'File::Find'    => 0,
@@ -106,6 +108,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: Build.PL 1c6ff14 2010-06-29 06:14:02Z sanko@cpan.org $
+=for rcs $Id: Build.PL d908b81 2010-07-04 01:48:52Z sanko@cpan.org $
 
 =cut
