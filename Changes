@@ -1,3 +1,8 @@
+Version 0.000002004 | 2010-08-25 18:16:33Z (Wed, 25 Aug 2010) | bc1ea36
+
+    API Changes/Compatibility Information:
+     * Adding methods for global and per-object download totals
+
 Version 0.000002003 | 2010-07-04 01:48:52Z (Sun, 04 Jul 2010) | d908b81
 
     Documentation/Sample Code/Test Suite/Metadata:
@@ -57,6 +62,6 @@ _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/anyevent-handle-throttle/commits/master
 
-$Ver: 0.000002003 $ from git $Rev: d908b81 $
-$Date: 2010-07-04 01:48:52Z (Sun, 04 Jul 2010) $
+$Ver: 0.000002004 $ from git $Rev: bc1ea36 $
+$Date: 2010-08-25 18:16:33Z (Wed, 25 Aug 2010) $
 $Url: http://github.com/sanko/anyevent-handle-throttle/raw/master/Changes $

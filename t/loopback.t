@@ -32,7 +32,7 @@ my $rd_ae = AnyEvent::Handle::Throttle->new(
             is $this_read, 1024,
                 sprintf 'Read %s more bytes into rbuf (%d bytes total)',
                 $this_read, length $h->rbuf;
-            diag sprintf '...%fs later', AE::now- $now;
+            note sprintf '...%fs later', AE::now- $now;
             $now = AE::now;
             $len = length $h->rbuf;
         }
@@ -44,7 +44,7 @@ my $rd_ae = AnyEvent::Handle::Throttle->new(
                     $dat = substr $data, 0, 2;
                     $dat .= substr $data, -5;
                     is(++$read, 1, 'first read chunk');
-                    diag sprintf '...%fs later', AE::now- $now;
+                    note sprintf '...%fs later', AE::now- $now;
                     $now = AE::now;
                     my $n = 5;
                     $wr_ae->push_write('A' x 5000);
@@ -59,7 +59,7 @@ my $rd_ae = AnyEvent::Handle::Throttle->new(
                         chunk => 5000,
                         sub {
                             is(++$read, 2, 'second read chunk');
-                            diag sprintf '...%fs later', AE::now- $now;
+                            note sprintf '...%fs later', AE::now- $now;
                             $now = AE::now;
                             $cv->broadcast;
                         }
@@ -97,5 +97,20 @@ $wr_ae->on_drain(
     }
 );
 $cv->recv;
-ok($dat eq 'AAXXXYZ', 'received data') || diag '$dat was: ' . $dat;
+ok($dat eq 'AAXXXYZ', 'received data') || note '$dat was: ' . $dat;
+
+#
+ok !$rd_ae->upload_total, 'reader uploaded nothing';
+is $rd_ae->global_upload_total, 10132, 'reader says uploaded is 10132 bytes';
+is $rd_ae->download_total, 10132,
+    'reader claims to have downloaded 10132 bytes';
+is $rd_ae->global_download_total, 10132,
+    'reader claims global download was 10132 bytes';
+is $wr_ae->upload_total,        10132, 'writer says it uploaded 10132 bytes';
+is $wr_ae->global_upload_total, 10132, 'writer says uploaded is 10132 bytes';
+ok !$wr_ae->download_total, 'writer claims to have downloaded nothing';
+is $wr_ae->global_download_total, 10132,
+    'writer claims global download was 10132 bytes';
+
+#
 done_testing;

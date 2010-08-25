@@ -17,7 +17,7 @@ TODO: {
          on_prepare => sub          {15},
          on_connect => sub { $prev = AE::now; },
          on_error => sub {
-             diag 'error ' . $_[2];
+             note 'error ' . $_[2];
              $_[0]->destroy;
              $condvar->send;
          },
@@ -29,7 +29,7 @@ TODO: {
          on_drain => sub {
              my $now      = AE::now;
              my $expected = int(length($req));
-             diag sprintf 'Write queue is empty after %f seconds',
+             note sprintf 'Write queue is empty after %f seconds',
                  $now - $prev;
              $prev = $now;
          },
@@ -74,6 +74,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for rcs $Id: http_default.t d908b81 2010-07-04 01:48:52Z sanko@cpan.org $
+=for rcs $Id: http_default.t f6b7de5 2010-08-25 18:10:39Z sanko@cpan.org $
 
 =cut
