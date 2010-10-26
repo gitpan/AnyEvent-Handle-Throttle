@@ -1,3 +1,8 @@
+Version 0.000002005 | 2010-10-26 17:01:07Z (Tue, 26 Oct 2010) | 922dfa3
+
+    Internal/Behavioral Changes:
+     * Correctly deal with errors when calling sysread( ... )
+
 Version 0.000002004 | 2010-08-25 18:16:33Z (Wed, 25 Aug 2010) | bc1ea36
 
     API Changes/Compatibility Information:
@@ -45,7 +50,7 @@ Version 0.000001 | 2010-06-15 00:31:17Z (Tue, 15 Jun 2010) | 8b45623
     API Changes/Compatibility Information:
      * It actually exists
 
-     Resolved Issues/Bug Fixes:
+    Resolved Issues/Bug Fixes:
      * ...see above
 
     Internal/Behavioral Changes:
@@ -62,6 +67,6 @@ _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/anyevent-handle-throttle/commits/master
 
-$Ver: 0.000002004 $ from git $Rev: bc1ea36 $
-$Date: 2010-08-25 18:16:33Z (Wed, 25 Aug 2010) $
+$Ver: 0.000002005 $ from git $Rev: 922dfa3 $
+$Date: 2010-10-26 17:01:07Z (Tue, 26 Oct 2010) $
 $Url: http://github.com/sanko/anyevent-handle-throttle/raw/master/Changes $
